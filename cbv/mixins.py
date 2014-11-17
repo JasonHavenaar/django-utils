@@ -23,6 +23,16 @@ class LoginRequiredMixin(UserCheckMixin):
 	def check_user(self, user):
 		return user.is_authenticated()
 
+class PermissionRequiredMixin(UserCheckMixin):
+	# Checks a given permission on the View as per the required_permission attribute. 
+	# Similar to the 'permission_required' decorator
+	required_permission = None
+
+	def check_user(self, user):
+		if user.is_authenticated() and self.required_permission:
+			return self.request.user.has_perm(self.required_permission)
+		return False
+
 
 class UserGroupRequiredMixin(UserCheckMixin):
 	# CBV Mixin requiring the current user to be in a givenpermission group.
